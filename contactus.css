@@ -1,0 +1,81 @@
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Poppins', sans-serif;
+}
+.contact
+{
+position: relative;
+min-height: 100vh;
+padding: 5opx 100px;
+display: flex; 
+background: url(bg-img.jpg);
+background-size: cover;
+}
+.contact .content h2
+{
+    font-size: 40px;
+    font-style: bold;
+    color: black;
+    text-align: center;
+    margin-top: 10%;
+    margin-left: 400px;
+}
+.contact .content p{
+    font-style: italic;
+    color: black;
+    text-align: center;
+    margin-left: 400px;
+}
+.address 
+{
+    margin-top: 250px;
+    margin-left: -470px;
+}
+.address h3{
+    font-style: normal;
+    color: darkred;
+    float: left;
+    padding-right: 50px;
+
+}
+.address p1{
+    font-style: italic;
+    color: brown;
+    float: right;
+}
+.email {
+    margin-top: 350px;
+    margin-left: -400px;
+}
+.email h4{
+    font-style: normal;
+    color: darkred;
+    float: left;
+    padding-right: 60px;
+}
+.email p2{
+    font-style: italic;
+    color: brown;
+    float: right;
+    font-size: medium;
+}
+.phone{
+    margin-top: 400px;
+    margin-left: -298px; 
+}
+.phone h5{
+    font-style: normal;
+    color: darkred;
+    float: left;
+    padding-right: 59px;
+    font-size: medium;
+}
+.phone p3{
+    font-style: italic;
+    color: brown;
+    float: right;
+}
+
+

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" href="logo.jpg">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: burlywood;
+            height: 200px;
+        }
+        h1, h2 {
+            color: black;
+            font: bold;
+        }
+        .poem-card {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: bisque;
+            max-width: 300px;
+            max-height: none;
+            display: inline-block;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 30px;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid brown;
+            border-radius: 5px;
+            resize: vertical;
+            background-color: bisque;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: firebrick;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: green;
+            font-size: medium;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Details</h1>
+        <div id="userName"></div>
+        <div id="userEmail"></div>
+        <a href="index.html">Logout</a>
+         
+        <h1>Poems</h1>
+        <div id="poemList"></div>
+
+        <div class="form-container">
+            <h2>Add New Poem</h2>
+            <form id="poemForm">
+                <textarea id="poem" placeholder="Enter your poem" required></textarea>
+                <textarea id="author" placeholder="Enter poem's poet" required></textarea>
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchUserDetails();
+            fetchPoems();
+
+            document.getElementById('poemForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const poem = document.getElementById('poem').value;
+                const author = document.getElementById('author').value;
+                submitPoem(poem, author);
+            });
+        });
+
+        function fetchUserDetails() {
+            fetch('http://panel.mait.ac.in:8001/auth/user-details/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user details');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('userName').textContent ='Name: ' + data.name;
+                document.getElementById('userEmail').textContent = 'Email: ' + data.email;
+            })
+            .catch(error => {
+                console.error('Error fetching user details:', error);
+            });
+        }
+
+        function fetchPoems() {
+            fetch('http://panel.mait.ac.in:8001/poem/get/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMTEyNzQ4LCJpYXQiOjE3MDg1MjA3NDgsImp0aSI6IjYzMTZiZmZhZWJkMDQ0MThiOTE4Y2E2Y2M3NTEyZjE4IiwiZW1haWwiOiJnc2hyZXkxOEBnbWFpbC5jb20ifQ.M9ymduRWYDuH8RZRZ24r3-fLaC7x0Pv98JJ_nsLCh0U'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch poems');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const poemListDiv = document.getElementById('poemList');
+                data.forEach(poem => {
+                    const poemCard = document.createElement('div');
+                    poemCard.classList.add('poem-card');
+                    poemCard.innerHTML = `
+                        <p>${poem.poem}</p>
+                        <p><strong>By:</strong> ${poem.author}</p>
+                    `;
+                    poemListDiv.appendChild(poemCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching poems:', error);
+            });
+        }
+
+        function submitPoem(poem, author) {
+            fetch('http://panel.mait.ac.in:8001/poem/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMTEyNzQ4LCJpYXQiOjE3MDg1MjA3NDgsImp0aSI6IjYzMTZiZmZhZWJkMDQ0MThiOTE4Y2E2Y2M3NTEyZjE4IiwiZW1haWwiOiJnc2hyZXkxOEBnbWFpbC5jb20ifQ.M9ymduRWYDuH8RZRZ24r3-fLaC7x0Pv98JJ_nsLCh0U'
+                },
+                body: JSON.stringify({
+                    poem: poem,
+                    author: author
+                }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Submission Successful');
+                    location.reload('refresh_token');
+                } else {
+                    throw new Error('Failed to add poem');
+                }return response.json();
+            })
+            .catch(error => {
+                console.error('Error adding poem:', error);
+            });
+        }
+            
+</script>
+</body>
+</html>
+
